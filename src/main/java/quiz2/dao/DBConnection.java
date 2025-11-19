@@ -11,14 +11,29 @@ public class DBConnection {
         try {
             Properties props = new Properties();
             InputStream is = DBConnection.class.getClassLoader().getResourceAsStream("jdbc.properties");
-            props.load(is);
+            if (is != null) {
+                props.load(is);
+            }
 
-            String driver = props.getProperty("jdbc.driver");
-            String url = props.getProperty("jdbc.url");
-            String username = props.getProperty("jdbc.username");
-            String password = props.getProperty("jdbc.password");
+            String envUrl  = System.getenv("MYSQL_URL");
+            String envUser = System.getenv("MYSQL_USER");
+            String envPass = System.getenv("MYSQL_PASSWORD");
 
-            Class.forName(driver);
+            String url, username, password;
+
+            if (envUrl != null && envUser != null && envPass != null) {
+                url = envUrl + "?useSSL=false&allowPublicKeyRetrieval=true";
+                username = envUser;
+                password = envPass;
+            } else {
+                String driver = props.getProperty("jdbc.driver");
+                Class.forName(driver);
+
+                url = props.getProperty("jdbc.url");
+                username = props.getProperty("jdbc.username");
+                password = props.getProperty("jdbc.password");
+            }
+
             return DriverManager.getConnection(url, username, password);
 
         } catch (Exception e) {
