@@ -4,7 +4,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-RUN mvn -B -e clean package -DskipTests
+RUN mvn -U -B clean package -DskipTests
 
 FROM tomcat:9.0
 WORKDIR /usr/local/tomcat
