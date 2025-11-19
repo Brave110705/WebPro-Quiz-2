@@ -2,9 +2,10 @@ FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR /app
 
 COPY pom.xml .
-COPY src ./src
+RUN mvn -B -q dependency:resolve
 
-RUN mvn -U -B clean package -DskipTests
+COPY src ./src
+RUN mvn -B -q package -DskipTests
 
 FROM tomcat:9.0
 WORKDIR /usr/local/tomcat
